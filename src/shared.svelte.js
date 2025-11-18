@@ -1,8 +1,30 @@
-import { APP_KEY } from './const';
+import { random } from 'lodash-es';
+import { APP_KEY, PET_RADIUS, PET_VELOCITY, TICK_MS, ZET_RADIUS } from './const';
 import { _sound } from './sound.svelte';
 import { _stats, ss } from './state.svelte';
+import { handleCollision, isPet, isZet, overlap, post } from './utils';
 
 export const _log = (value) => console.log($state.snapshot(value));
+
+const wellScattered = () => {
+    const zet = findZet();
+
+    for (const fob1 of ss.fobs) {
+        for (const fob2 of ss.fobs) {
+            if (fob1 === fob2) {
+                continue;
+            }
+
+            const dist = Math.hypot(fob1.cx - fob2.cx, fob1.cy - fob2.cy);
+
+            if (dist < zet.radius * 5) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+};
 
 export const onStart = () => {
     if (!_sound.musicPlayed) {
@@ -13,6 +35,120 @@ export const onStart = () => {
 
     delete ss.over;
     delete ss.restart;
+
+    ss.ticks = 0;
+
+    do {
+        ss.fobs = [];
+
+        addZet();
+        addPets();
+    } while (!wellScattered());
+
+    clearInterval(ss.timer);
+    ss.timer = setInterval(onTick, TICK_MS);
+
+    _stats.plays += 1;
+    persist();
+};
+
+const hitEdge = (fob) => {
+    const x = fob.cx;
+    const y = fob.cy;
+
+    if (x - fob.radius <= 0) {
+        return 4;
+    }
+
+    if (x + fob.radius >= ss.space.width) {
+        return 2;
+    }
+
+    if (y - fob.radius <= 0) {
+        return 1;
+    }
+
+    if (y + fob.radius >= ss.space.height) {
+        return 3;
+    }
+
+    return 0;
+};
+
+const onTick = () => {
+    if (ss.dlg) {
+        return;
+    }
+
+    ss.ticks += 1;
+
+    const zet = findZet();
+    zet.cx += zet.vel.x;
+    zet.cy += zet.vel.y;
+
+    const excluded = [];
+
+    for (const fob of ss.fobs) {
+        if (!isZet(fob)) {
+            fob.cx += fob.vel.x;
+            fob.cy += fob.vel.y;
+        }
+
+        const edge = hitEdge(fob);
+
+        if (edge) {
+            if (isZet(fob)) {
+                shake();
+                _sound.play('plop');
+                ss.bounced = true;
+                post(() => delete ss.bounced, 1000);
+            }
+
+            excluded.push(fob);
+
+            if (edge === 4 || edge === 2) {
+                fob.vel = { x: -fob.vel.x, y: fob.vel.y };
+            } else if (edge === 1 || edge === 3) {
+                fob.vel = { x: fob.vel.x, y: -fob.vel.y };
+            }
+        }
+    }
+
+    for (const fob1 of ss.fobs) {
+        if (excluded.includes(fob1)) {
+            continue;
+        }
+
+        for (const fob2 of ss.fobs) {
+            if (fob1 === fob2) {
+                continue;
+            }
+
+            if (excluded.includes(fob2)) {
+                continue;
+            }
+
+            if (!overlap(fob1, fob2)) {
+                continue;
+            }
+
+            if (isZet(fob1) || isZet(fob2)) {
+                shake();
+
+                if (isPet(fob1) || isPet(fob2)) {
+                    // TODO
+                }
+            }
+
+            const { v1, v2 } = handleCollision(fob1, fob2);
+
+            fob1.vel = v1;
+            fob2.vel = v2;
+
+            excluded.push(fob1);
+            excluded.push(fob2);
+        }
+    }
 };
 
 export const lost = () => (ss.over && ss.over !== 'won') ? ss.over : false;
@@ -44,4 +180,50 @@ export const loadGame = () => {
         _stats.total_points = 0;
         _stats.best_points = 0;
     }
+};
+
+const makeVelocity = (velocity) => {
+    velocity *= ss.scale;
+
+    let x = random(0, velocity, true);
+    let y = velocity - x;
+
+    if (random() % 2) {
+        x = -x;
+    }
+
+    if (random() % 2) {
+        y = -y;
+    }
+
+    return { x, y };
+};
+
+const addZet = () => {
+    const radius = ZET_RADIUS * ss.scale;
+
+    const width = ss.space.width - radius * 2;
+    const height = ss.space.height - radius * 2;
+
+    const elon = { id: 'zet', cx: random(width) + radius, cy: random(height) + radius, radius, vel: { x: 0, y: 0 }, ticks: 0 };
+    ss.fobs.push(elon);
+};
+
+const addPets = () => {
+    const radius = PET_RADIUS * ss.scale;
+
+    const width = ss.space.width - radius * 2;
+    const height = ss.space.height - radius * 2;
+
+    for (let i = 0; i < ss.ufo_count; i++) {
+        ss.fobs.push({ id: `ufo-${i + 1}`, cx: random(width) + radius, cy: random(height) + radius, radius, vel: makeVelocity(PET_VELOCITY), ticks: 0 });
+    }
+};
+
+export const findZet = () => ss.fobs.find((fob) => isZet(fob));
+
+const shake = () => {
+    const zet = findZet();
+    zet.shake = true;
+    post(() => delete zet.shake, 200);
 };
