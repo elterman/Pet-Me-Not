@@ -1,8 +1,8 @@
 import { random } from 'lodash-es';
 import { APP_KEY, PET_RADIUS, PET_VELOCITY, TICK_MS, ZET_RADIUS } from './const';
 import { _sound } from './sound.svelte';
-import { _stats, ss } from './state.svelte';
-import { handleCollision, isPet, isZet, overlap, post } from './utils';
+import { _prompt, _stats, ss } from './state.svelte';
+import { clientRect, handleCollision, isPet, isZet, overlap, post } from './utils';
 
 export const _log = (value) => console.log($state.snapshot(value));
 
@@ -215,8 +215,8 @@ const addPets = () => {
     const width = ss.space.width - radius * 2;
     const height = ss.space.height - radius * 2;
 
-    for (let i = 0; i < ss.ufo_count; i++) {
-        ss.fobs.push({ id: `ufo-${i + 1}`, cx: random(width) + radius, cy: random(height) + radius, radius, vel: makeVelocity(PET_VELOCITY), ticks: 0 });
+    for (let i = 0; i < ss.pet_count; i++) {
+        ss.fobs.push({ id: `pet-${i + 1}`, cx: random(width) + radius, cy: random(height) + radius, radius, vel: makeVelocity(PET_VELOCITY), ticks: 0 });
     }
 };
 
@@ -226,4 +226,22 @@ const shake = () => {
     const zet = findZet();
     zet.shake = true;
     post(() => delete zet.shake, 200);
+};
+
+export const doResize = (init) => {
+    ss.space = clientRect('.space');
+
+    if (!init) {
+        return;
+    }
+
+    _prompt.hide(false);
+    _sound.stopMusic();
+
+    if (ss.fobs.length) {
+        ss.fobs = [];
+        ss.dlg = true;
+
+        delete ss.over;
+    }
 };

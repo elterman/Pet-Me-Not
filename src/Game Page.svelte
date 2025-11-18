@@ -1,23 +1,25 @@
 <script>
-	import KittenZombie from '$lib/images/Kitten Zombie.webp';
-	import Kitten from '$lib/images/Kitten.webp';
-	import Zombie from '$lib/images/Zombie.webp';
-
-	const sz = 60;
+	import Dialog from './Dialog.svelte';
+	// import InfoPanel from './Info Panel.svelte';
+	import Space from './Space.svelte';
+	// import Stats from './Stats.svelte';
+	import Prompts from './Prompts.svelte';
 </script>
 
 <div class="game-page">
-	<img src={Kitten} alt="Kitten" width={sz}/>
-	<img src={Zombie} alt="Zombie" width={sz}/>
-	<img src={KittenZombie} alt="Kitten Zombie" width={sz}/>
+	<!-- <Stats/> -->
+	<Space />
+	<!-- <InfoPanel /> -->
+	<Dialog />
+	<Prompts />
 </div>
 
 <style>
 	.game-page {
 		grid-area: 1/1;
-		place-self: center;
 		display: grid;
-		place-content: cener;
-		gap: 15px;
+		grid: auto 1fr auto / auto;
+		box-sizing: border-box;
+		/* border: 10px solid var(--orange); */
 	}
 </style>

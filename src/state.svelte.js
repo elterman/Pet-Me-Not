@@ -1,6 +1,43 @@
+import { DLG_INSTR, PROMPT_TRANSITION } from './const';
+import { showDialog } from './shared.svelte';
+import { post } from './utils';
+
 export const ss = $state({
+    fobs: [],
     dlg: true,
-    size: 4,
+    pet_count: 10,
+});
+
+export const _prompt = $state({
+    id: '',
+    opacity: 0,
+
+    hide: (plop = true) => {
+        if (!_prompt.opacity) {
+            return;
+        }
+
+        _prompt.opacity = 0;
+        post(() => _prompt.id = null, PROMPT_TRANSITION);
+
+        if (plop && !ss.over && ss.flies.length === 0) {
+            post(() => showDialog(DLG_INSTR, plop));
+        }
+    },
+
+    set: (id) => {
+        const doSet = () => {
+            _prompt.id = id;
+            _prompt.opacity = id ? 1 : 0;
+        };
+
+        if (_prompt.id) {
+            _prompt.hide(false);
+            post(doSet, PROMPT_TRANSITION);
+        } else {
+            doSet();
+        }
+    }
 });
 
 export const _stats = $state({
