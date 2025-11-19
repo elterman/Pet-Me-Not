@@ -17,11 +17,11 @@
 	</div>
 	<div class="item">
 		<span class="label">ave</span>
-		<div class="bold"><Timer ticks={ave} /></div>
+		<div class="flow bold"><Timer ticks={ave} /></div>
 	</div>
 	<div class="item">
 		<span class="label">best</span>
-		<div class="bold"><Timer ticks={_stats.best_ticks} /></div>
+		<div class="flow bold"><Timer ticks={_stats.best_ticks} /></div>
 	</div>
 </div>
 

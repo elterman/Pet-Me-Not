@@ -7,7 +7,7 @@
 </script>
 
 <div class="game-page">
-	<Stats/>
+	<Stats />
 	<InfoPanel />
 	<Space />
 	<Dialog />
@@ -20,6 +20,11 @@
 		display: grid;
 		grid: auto 1fr auto / auto;
 		box-sizing: border-box;
-		/* border: 10px solid var(--orange); */
+		text-shadow:
+			1px 1px black,
+			1px -1px black,
+			-1px -1px black,
+			-1px 1px black;
+		/* text-shadow: none; */
 	}
 </style>

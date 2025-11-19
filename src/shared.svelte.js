@@ -17,7 +17,7 @@ const wellScattered = () => {
 
             const dist = Math.hypot(fob1.cx - fob2.cx, fob1.cy - fob2.cy);
 
-            if (dist < zet.radius * 5) {
+            if (dist < zet.radius * 6) {
                 return false;
             }
         }

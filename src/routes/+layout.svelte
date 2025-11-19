@@ -1,5 +1,5 @@
 <script>
-	import favicon from '$lib/images/Logo.webp';
+	import favicon from '$lib/images/favicon.png';
 
 	let { children } = $props();
 </script>
