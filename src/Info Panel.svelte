@@ -3,21 +3,17 @@
 	import { ss } from './state.svelte';
 	import Timer from './Timer.svelte';
 
-	const duration = $derived('');
-
 	const fsz = $derived(Math.min(32, 36 * Math.min(ss.scale, 1)));
 	const lsz = $derived(fsz * 0.9);
-	const alive = $derived(ss.fobs.filter(f => !f.dead).length);
+	const alive = $derived(ss.fobs.filter((f) => !f.dead).length);
+	const dead = $derived(ss.fobs.filter((f) => f.dead && f.dead !== true).length);
 </script>
 
 {#if !ss.dlg}
 	<div class="info-panel {ss.over ? 'over' : ''}" style="font-size: {fsz}px;">
-		<div class="mid-section">
-			<!-- <div class="label" style="font-size: {lsz}px;">{duration}</div> -->
-			<div class="timer"><Timer /></div>
-		</div>
-		<div class="label" style="font-size: {lsz}px;">live kittens</div>
-		<div class="comp">
+		<div class="timer"><Timer /></div>
+		<div class="label" style="font-size: {lsz}px; margin-top: 20px;">alive</div>
+		<div class="num">
 			<NumberFlow value={alive} />
 		</div>
 	</div>
@@ -41,20 +37,13 @@
 		/* opacity: 0.6; */
 	}
 
-	.mid-section {
-		display: grid;
-		place-items: center;
-		margin: 15px 0;
-	}
-
 	.label {
 		margin-right: 20px;
 		font-family: Orbitron;
-		font-weight: bold;
 	}
 
 	.timer,
-	.comp {
+	.num {
 		font-family: Radhiumz;
 	}
 </style>
