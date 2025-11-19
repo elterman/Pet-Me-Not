@@ -190,37 +190,6 @@
 		overflow: hidden;
 		touch-action: manipulation;
 		outline: none !important;
-		/* background-image: url('$lib/images/Sky.jpg');
-		background-position-x: center;
-		background-position-y: center; */
 		box-sizing: border-box;
-	}
-
-	.pulse {
-		animation: pulse 10s alternate infinite ease-in-out;
-	}
-
-	@keyframes pulse {
-		from {
-			background-size: 2000px;
-		}
-		to {
-			background-size: 1500px;
-		}
-	}
-
-	@font-face {
-		font-family: Orbitron;
-		src: url('$lib/fonts/Orbitron.ttf');
-	}
-
-	@font-face {
-		font-family: DMSans;
-		src: url('$lib/fonts/DMSans.ttf');
-	}
-
-	@font-face {
-		font-family: Radhiumz;
-		src: url('$lib/fonts/NcsRadhiumz-Rp3x6.ttf');
 	}
 </style>
