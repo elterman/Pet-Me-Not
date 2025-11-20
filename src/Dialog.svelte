@@ -12,7 +12,7 @@
         ${li}<span>Touching a live kitten turns it into a zombie.</span></li>
         ${li}<span>Zombie kittens spread the plague.</span></li>
         ${li}<span>A zombie kitten revives after a short time—unless its 9 lives are spent.</span></li>
-        ${li}<span>The game ends when no lives remain.</span></li>
+        ${li}<span>It's over when no lives remain.</span></li>
         </ul>`;
 
 	const width = $derived(ss.space?.width > 580 ? '540px' : '80%');
