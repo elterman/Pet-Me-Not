@@ -1,5 +1,5 @@
 import { isNumber, random } from 'lodash-es';
-import { APP_KEY, DEAD_MS, PET_RADIUS, PET_VELOCITY, TICK_MS, ZET_RADIUS } from './const';
+import { APP_KEY, DEAD_MS, PET_COUNT, PET_RADIUS, PET_VELOCITY, TICK_MS, ZET_RADIUS } from './const';
 import { _sound } from './sound.svelte';
 import { _prompt, _stats, ss } from './state.svelte';
 import { clientRect, handleCollision, isPet, isZet, overlap, post } from './utils';
@@ -242,7 +242,7 @@ const addPets = () => {
     const width = ss.space.width - radius * 2;
     const height = ss.space.height - radius * 2;
 
-    for (let i = 0; i < ss.pet_count; i++) {
+    for (let i = 0; i < PET_COUNT; i++) {
         ss.fobs.push({ id: `pet-${i + 1}`, lives: 9, cx: random(width) + radius, cy: random(height) + radius, radius, vel: makeVelocity(PET_VELOCITY * 0.1) });
     }
 };
