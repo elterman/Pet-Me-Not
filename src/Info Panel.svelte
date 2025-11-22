@@ -34,7 +34,6 @@
 
 	.label {
 		font-family: Orbitron;
-		/* font-weight: bold; */
 	}
 
 	.timer,
@@ -43,6 +42,6 @@
 	}
 
 	.healthy {
-		color: var(--gold);
+		color: var(--green);
 	}
 </style>
