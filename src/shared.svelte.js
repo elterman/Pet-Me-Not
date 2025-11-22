@@ -114,9 +114,9 @@ const onTick = () => {
             fob.cy += fob.vel.y;
 
             if (isNumber(fob.dead) && fob.lives > 0 && ((ss.ticks - fob.dead) * TICK_MS) >= DEAD_MS) {
-                _sound.play('won', { rate: 4 });
                 shake(fob);
                 delete fob.dead;
+                _sound.play('won', { rate: liveCount() < PET_COUNT ? 4 : 1 });
             }
         }
 
@@ -168,7 +168,7 @@ const onTick = () => {
                     fob.dead = ss.ticks;
                     ss.streak_ticks = 0;
 
-                    _sound.play('lost', { rate: fob.lives ? 3 : 2 });
+                    _sound.play('lost', { rate: 2 });
                 }
             };
 
