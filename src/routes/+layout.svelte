@@ -22,7 +22,7 @@
 			--orange: #f79600;
 			--tan: #998c67;
 			--gold: #ffe4aae0;
-			--lightblue: #aadaffe8;
+			--lightblue: #aadaff;
 			--green: #c6ffaae8;
 			font-family: Quicksand;
 		}

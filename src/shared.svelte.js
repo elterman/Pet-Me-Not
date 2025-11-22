@@ -82,6 +82,10 @@ const onTick = () => {
 
     ss.ticks += 1;
 
+    if (liveCount() === PET_COUNT) {
+        ss.streak_ticks += 1;
+    }
+
     const zet = findZet();
     zet.cx += zet.vel.x;
     zet.cy += zet.vel.y;
@@ -149,24 +153,20 @@ const onTick = () => {
                 continue;
             }
 
-            const check = (zob, fob) => {
+            const checkDied = (zob, fob) => {
                 if (isPet(fob) && !fob.dead) {
                     shake(fob);
                     fob.dead = ss.ticks;
-                    // fob.lives -= 1;
+                    ss.streak_ticks = 0;
 
                     _sound.play('lost', { rate: fob.lives ? 3 : 2 });
-
-                    if (ss.fobs.filter(f => isPet(f)).every(f => f.lives === 0)) {
-                        onOver();
-                    }
                 }
             };
 
             if (isZet(fob1) || fob1.dead) {
-                check(fob1, fob2);
+                checkDied(fob1, fob2);
             } else if (isZet(fob2) || fob2.dead) {
-                check(fob2, fob1);
+                checkDied(fob2, fob1);
             }
 
             const { v1, v2 } = handleCollision(fob1, fob2);
@@ -272,22 +272,4 @@ const shake = (fob) => {
     post(() => delete fob.shake, 200);
 };
 
-const onOver = () => {
-    _sound.play('lost');
-    clearInterval(ss.timer);
-    delete ss.timer;
-
-    post(() => {
-        _stats.won += 1;
-
-        _stats.total_ticks += ss.ticks;
-
-        if (_stats.won === 1 || ss.ticks > _stats.best_ticks) {
-            _stats.best_ticks = ss.ticks;
-        }
-
-        persist();
-    });
-
-    ss.over = true;
-};
+export const liveCount = () => ss.fobs.filter((f) => !f.dead).length;
