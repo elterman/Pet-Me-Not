@@ -13,7 +13,7 @@
 	);
 </script>
 
-<div class="fob" {style} transition:fade={{ duration: ss.over ? 500 : 0 }}>
+<div class="fob {isZet(fob) ? 'zet-pattern' : (fob.dead ? 'pet-pattern' : '')}" {style} transition:fade={{ duration: ss.over ? 500 : 0 }}>
 	<div class="shakeable {fob.shake ? 'shake' : ''}">
 		<div class="rotatable {fob.dead ? '' : 'alive'}" style="animation-delay: {random(0, 1)}s;">
 			<img {src} alt="" />
@@ -28,6 +28,7 @@
 		box-sizing: border-box;
 		aspect-ratio: 1;
 		place-self: start;
+		border-radius: 50%;
 	}
 
 	.shakeable {
@@ -78,5 +79,13 @@
 		to {
 			transform: rotate(30deg);
 		}
+	}
+
+	.pet-pattern {
+		background-image: url('$lib/images/Pet Pattern.webp');
+	}
+
+	.zet-pattern {
+		background-image: url('$lib/images/Zet Pattern.webp');
 	}
 </style>
